@@ -50,7 +50,7 @@ func Run(BotToken string) {
                 var key string
                 for _, v := range i.Interaction.ApplicationCommandData().Options {
                     switch v.Name {
-                    case "prompt":
+                    case "key":
                         key = v.StringValue()
                     }
                 }

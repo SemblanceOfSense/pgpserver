@@ -43,7 +43,6 @@ func Run(BotToken string) {
             data := i.ApplicationCommandData()
             switch data.Name {
             case "update-key":
-                fmt.Println("Sanity check")
                 if i.Interaction.Member.User.ID == s.State.User.ID { return; }
                 responseData := ""
 

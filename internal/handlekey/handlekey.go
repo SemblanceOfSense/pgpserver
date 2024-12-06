@@ -1,7 +1,6 @@
 package handlekey
 
 import (
-	"errors"
 	"os"
 	"regexp"
 )

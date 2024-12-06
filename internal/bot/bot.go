@@ -39,6 +39,7 @@ func Run(BotToken string) {
         s *discordgo.Session,
         i *discordgo.InteractionCreate,
     ) {
+        fmt.Println("Mega sanity check")
         if i.Type == discordgo.InteractionApplicationCommand {
             data := i.ApplicationCommandData()
             switch data.Name {

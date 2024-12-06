@@ -39,11 +39,10 @@ func Run(BotToken string) {
         s *discordgo.Session,
         i *discordgo.InteractionCreate,
     ) {
-        fmt.Println("Mega sanity check")
         if i.Type == discordgo.InteractionApplicationCommand {
             data := i.ApplicationCommandData()
             switch data.Name {
-            case "update-public-key":
+            case "update-key":
                 fmt.Println("Sanity check")
                 if i.Interaction.Member.User.ID == s.State.User.ID { return; }
                 responseData := ""

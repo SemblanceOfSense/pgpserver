@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/ProtonMail/gopenpgp/v3/crypto"
 )
@@ -42,6 +43,8 @@ func UpdateKey(url string, username string) string {
 }
 
 func GetKey(username string) string {
+    username = strings.ToLower(username)
+
     if _, err := os.Stat("/etc/pgpbot/" + username); errors.Is(err, os.ErrNotExist) {
         return "No such user in database"
     }

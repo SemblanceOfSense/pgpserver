@@ -61,6 +61,7 @@ func Run(BotToken string) {
                     &discordgo.InteractionResponse{
                         Type: discordgo.InteractionResponseChannelMessageWithSource,
                         Data: &discordgo.InteractionResponseData{
+                            Flags: 1 << 6,
                             Content: responseData,
                         },
                     },

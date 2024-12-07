@@ -49,5 +49,5 @@ func GetKey(username string) string {
     key, err := os.ReadFile("/etc/pgpbot/" + username)
     if err != nil { fmt.Println(err); return "Error opening file" }
 
-    return "```" + string(key) + "```"
+    return username + ":\n```" + string(key) + "```"
 }

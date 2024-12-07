@@ -25,7 +25,7 @@ func Run(BotToken string) {
             Description: "Submit a pgp key to the database tied to your discord account",
             Options: []*discordgo.ApplicationCommandOption {
                 {
-                    Type: discordgo.ApplicationCommandOptionString,
+                    Type: discordgo.ApplicationCommandOptionAttachment,
                     Name: "key",
                     Description: "pgp public pey",
                     Required: true,
@@ -46,14 +46,15 @@ func Run(BotToken string) {
                 if i.Interaction.Member.User.ID == s.State.User.ID { return; }
                 responseData := ""
 
-                var key string
+                var attachmentUrl string
                 for _, v := range i.Interaction.ApplicationCommandData().Options {
                     switch v.Name {
                     case "key":
-                        key = v.StringValue()
+                        attachmentID := i.ApplicationCommandData().Options[0].Value.(string)
+                        attachmentUrl = i.ApplicationCommandData().Resolved.Attachments[attachmentID].URL
                     }
                 }
-                responseData = handlekey.UpdateKey(key, i.Interaction.Member.User.ID);
+                responseData = handlekey.UpdateKey(attachmentUrl, i.Interaction.Member.User.ID);
 
                 err = s.InteractionRespond(
                     i.Interaction,

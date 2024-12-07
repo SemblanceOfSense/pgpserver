@@ -27,7 +27,19 @@ func Run(BotToken string) {
                 {
                     Type: discordgo.ApplicationCommandOptionAttachment,
                     Name: "key",
-                    Description: "pgp public pey",
+                    Description: "pgp public key",
+                    Required: true,
+                },
+            },
+        },
+        {
+            Name: "get-key",
+            Description: "Get pgp key of user by username",
+            Options: []*discordgo.ApplicationCommandOption {
+                {
+                    Type: discordgo.ApplicationCommandOptionString,
+                    Name: "username",
+                    Description: "username of requested user",
                     Required: true,
                 },
             },
@@ -54,7 +66,7 @@ func Run(BotToken string) {
                         attachmentUrl = i.ApplicationCommandData().Resolved.Attachments[attachmentID].URL
                     }
                 }
-                responseData = handlekey.UpdateKey(attachmentUrl, i.Interaction.Member.User.ID);
+                responseData = handlekey.UpdateKey(attachmentUrl, i.Interaction.Member.User.Username);
 
                 err = s.InteractionRespond(
                     i.Interaction,
@@ -67,6 +79,29 @@ func Run(BotToken string) {
                     },
                 )
                 if err != nil { fmt.Println("Bot 3"); log.Fatal(err) }
+            case "get-key":
+                if i.Interaction.Member.User.ID == s.State.User.ID { return; }
+                responseData := ""
+
+                var username string
+                for _, v := range i.Interaction.ApplicationCommandData().Options {
+                    switch v.Name {
+                    case "username":
+                        username = v.StringValue()
+                    }
+                }
+                responseData = handlekey.GetKey(username);
+
+                err = s.InteractionRespond(
+                    i.Interaction,
+                    &discordgo.InteractionResponse{
+                        Type: discordgo.InteractionResponseChannelMessageWithSource,
+                        Data: &discordgo.InteractionResponseData{
+                            Flags: 1 << 6,
+                            Content: responseData,
+                        },
+                    },
+                )
             }
         }
     })

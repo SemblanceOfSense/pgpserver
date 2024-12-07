@@ -44,6 +44,10 @@ func Run(BotToken string) {
                 },
             },
         },
+        {
+            Name: "remove-key",
+            Description: "Remove your key from the database",
+        },
     })
     if err != nil { fmt.Println("Bot 2"); log.Fatal(err) }
 
@@ -53,11 +57,11 @@ func Run(BotToken string) {
     ) {
         if i.Type == discordgo.InteractionApplicationCommand {
             data := i.ApplicationCommandData()
+            responseData := ""
+            if i.Interaction.Member.User.ID == s.State.User.ID { return; }
+
             switch data.Name {
             case "update-key":
-                if i.Interaction.Member.User.ID == s.State.User.ID { return; }
-                responseData := ""
-
                 var attachmentUrl string
                 for _, v := range i.Interaction.ApplicationCommandData().Options {
                     switch v.Name {
@@ -68,21 +72,7 @@ func Run(BotToken string) {
                 }
                 responseData = handlekey.UpdateKey(attachmentUrl, i.Interaction.Member.User.Username);
 
-                err = s.InteractionRespond(
-                    i.Interaction,
-                    &discordgo.InteractionResponse{
-                        Type: discordgo.InteractionResponseChannelMessageWithSource,
-                        Data: &discordgo.InteractionResponseData{
-                            Flags: 1 << 6,
-                            Content: responseData,
-                        },
-                    },
-                )
-                if err != nil { fmt.Println("Bot 3"); log.Fatal(err) }
             case "get-key":
-                if i.Interaction.Member.User.ID == s.State.User.ID { return; }
-                responseData := ""
-
                 var username string
                 for _, v := range i.Interaction.ApplicationCommandData().Options {
                     switch v.Name {
@@ -92,17 +82,21 @@ func Run(BotToken string) {
                 }
                 responseData = handlekey.GetKey(username);
 
-                err = s.InteractionRespond(
-                    i.Interaction,
-                    &discordgo.InteractionResponse{
-                        Type: discordgo.InteractionResponseChannelMessageWithSource,
-                        Data: &discordgo.InteractionResponseData{
-                            Flags: 1 << 6,
-                            Content: responseData,
-                        },
-                    },
-                )
+            case "remove-key":
+                username := i.Interaction.Member.User.Username
+                responseData = handlekey.RemoveKey(username);
             }
+
+            err = s.InteractionRespond(
+                i.Interaction,
+                &discordgo.InteractionResponse{
+                    Type: discordgo.InteractionResponseChannelMessageWithSource,
+                    Data: &discordgo.InteractionResponseData{
+                        Flags: 1 << 6,
+                        Content: responseData,
+                    },
+                },
+            )
         }
     })
 

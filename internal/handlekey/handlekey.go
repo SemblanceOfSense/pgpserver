@@ -51,3 +51,14 @@ func GetKey(username string) string {
 
     return "```" + string(key) + "```"
 }
+
+func RemoveKey(username string) string {
+    if _, err := os.Stat("/etc/pgpbot/" + username); errors.Is(err, os.ErrNotExist) {
+        return "No such user in database"
+    }
+
+    err := os.Remove("/etc/pgpbot/" + username)
+    if err != nil { fmt.Println(err); return "Error deleteing file" }
+
+    return "Successfully deleted key"
+}
